@@ -61,9 +61,30 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
 
+	pros::MotorGroup left_mg({-5, -8, -9, -10});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
+	pros::MotorGroup right_mg({1, 2, 3, 4});
 
+	left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+	left_mg.move_velocity(200); //Go straight
+	right_mg.move_velocity(200);
+	pros::delay(2000);
+
+	left_mg.move_velocity(0); //Stop
+	right_mg.move_velocity(0);
+	pros::delay(2000);
+
+	left_mg.move_velocity(-200); // Turn left
+	right_mg.move_velocity(200);
+	pros::delay(2000);
+
+	left_mg.move_velocity(0); // Stop
+	right_mg.move_velocity(0);
+	pros::delay(2000);
+}
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
