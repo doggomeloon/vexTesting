@@ -63,19 +63,8 @@ void competition_initialize() {}
  */
 void autonomous() {}
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+
+
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::MotorGroup left_mg({-5, -8, -9, -10});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
@@ -83,15 +72,6 @@ void opcontrol() {
 
 	left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-	bool a = false;
-
-	bool pressed = false;
-	bool slowMode = false;
-
-	int ticks = 0;
-
-	int sens = 50;
 
 	int t = 5; // Amount of time to reach full speed
 	int count = 0; // Current step
@@ -102,67 +82,6 @@ void opcontrol() {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-
-		// This code is assuming that the wheels are NOT omnidirectional, and no strafing is possible
-
-		// int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		// int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		//                  // Sets right motor voltage
-		
-
-		// a = master.get_digital(DIGITAL_A);
-		
-		
-		// if(a && !pressed){
-		// 	pressed = true;
-		// 	slowMode = !slowMode;
-		// } else if (a && pressed){
-		// 	// hi
-		// } else if (!a){
-		// 	pressed = false;
-		// }
-
-		// if (slowMode){
-		// 	left_mg.move((dir - turn)*0.2);      
-		// 	right_mg.move((dir + turn)*0.2);   
-		// } else {
-		// 	left_mg.move(dir - turn);             
-		// 	right_mg.move(dir + turn);   
-		// }
-
-		// int d = master.get_analog(ANALOG_LEFT_Y);
-		// int t = 3;
-
-		// while(d){
-
-		// }
-
-		// int currentPower = (d)
-
-		// for (int i=100;i<1; i--){
-		// 	left_mg.move(d*(t/i));
-		// 	right_mg.move(d*(t/i));
-		//}
-
-		// int joystick = master.get_analog(ANALOG_LEFT_Y);
-		
-		// if (joystick == 0){
-		// 	ticks = 0;
-		// } else if (joystick != 0){
-		// 	ticks++;
-		// }
-
-		// if (joystick<0){
-		// 	left_mg.move(-exp(ticks/sens));
-		// 	right_mg.move(-exp(ticks/sens));
-		// } else if (joystick > 0){
-		// 	left_mg.move(exp(ticks/sens));
-		// 	right_mg.move(exp(ticks/sens));
-		// }
-
-		
-		// pros::lcd::set_text(0, std::to_string(joystick));
-
 
 		int dy = master.get_analog(ANALOG_LEFT_Y);
 		int dx = master.get_analog(ANALOG_RIGHT_X);
@@ -197,9 +116,6 @@ void opcontrol() {
 
 
 		pros::delay(delay_per_step); // Delays to prevent 
-
-
-
 
 	
 	}
