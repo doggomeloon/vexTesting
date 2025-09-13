@@ -69,6 +69,7 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::MotorGroup left_mg({-5, -8, -9, -10});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
 	pros::MotorGroup right_mg({1, 2, 3, 4});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+	pros::Motor arm(15);
 
 	left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -79,10 +80,21 @@ void opcontrol() {
 	int delay_per_step = (t * 1000) / steps; // Number of milliseconds within each step
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
+		// SPATULA (ARM) //
+
+		bool up = master.get_digital(DIGITAL_R1);
+		bool down = master.get_digital(DIGITAL_L1);
+		int armSpeed = 60;
+
+		if(up){
+			arm.move(armSpeed);
+		} else if (down) {
+			arm.move(-armSpeed);
+		}
+
+		// DRIVING //
+		
 		int dy = master.get_analog(ANALOG_LEFT_Y);
 		int dx = master.get_analog(ANALOG_RIGHT_X);
 
