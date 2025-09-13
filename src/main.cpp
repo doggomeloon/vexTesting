@@ -173,10 +173,20 @@ void opcontrol() {
 			}
 
 			double factor = count / (double)steps; // The amount that the speed increases per increment if this works i hope please work please please please
-			int output = static_cast<int>((dy*factor)-(dx*factor)); // The final speed i think // I also dont know if this is how you cast correctly
 
-			left_mg.move(static_cast<int>((dy*factor)-(dx*factor))); // Move the output
-			right_mg.move(static_cast<int>((dy*factor)+(dx*factor)));
+			int leftOutput = static_cast<int>((dy*factor)-(dx*factor));
+			int rightOutput = static_cast<int>((dy*factor)+(dx*factor));
+
+			if(leftOutput < 0.1*(dy-dx)){
+				leftOutput = 0.1*(dy-dx);
+			}
+			if(rightOutput < 0.1*(dy+dx)){
+				rightOutput = 0.1*(dy+dx);
+			}
+
+
+			left_mg.move(leftOutput); // Move the output
+			right_mg.move(rightOutput);
 
 		} else {
         	// Reset when joystick released
