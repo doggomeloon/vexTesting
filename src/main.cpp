@@ -69,16 +69,16 @@ void autonomous() {
 	left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-	left_mg.move_velocity(200); //Go straight
-	right_mg.move_velocity(200);
+	left_mg.move_velocity(15); //Go straight
+	right_mg.move_velocity(15);
 	pros::delay(2000);
 
 	left_mg.move_velocity(0); //Stop
 	right_mg.move_velocity(0);
 	pros::delay(2000);
 
-	left_mg.move_velocity(-200); // Turn left
-	right_mg.move_velocity(200);
+	left_mg.move_velocity(-15); // Turn left
+	right_mg.move_velocity(15);
 	pros::delay(2000);
 
 	left_mg.move_velocity(0); // Stop
@@ -95,9 +95,11 @@ void opcontrol() {
 	left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
-	int t = 5; // Amount of time to reach full speed
+	int t = 3; // Amount of time to reach full speed
 	int count = 0; // Current step
 	int steps = 100; // Number of increments within 't' seconds 
+	int minCount = 0.15*steps; // CHANGE THIS WHEN NEEDED
+	count = minCount;
 	int delay_per_step = (t * 1000) / steps; // Number of milliseconds within each step
 
 	while (true) {
@@ -123,26 +125,14 @@ void opcontrol() {
 			if(count < steps){
 				count++; //Increment 
 			}
+			double factor = count / (double)steps; 
 
-			double factor = count / (double)steps; // The amount that the speed increases per increment if this works i hope please work please please please
-
-			int leftOutput = static_cast<int>((dy*factor)-(dx*factor));
-			int rightOutput = static_cast<int>((dy*factor)+(dx*factor));
-
-			if(leftOutput < 0.1*(dy-dx)){
-				leftOutput = 0.1*(dy-dx);
-			}
-			if(rightOutput < 0.1*(dy+dx)){
-				rightOutput = 0.1*(dy+dx);
-			}
-
-
-			left_mg.move(leftOutput); // Move the output
-			right_mg.move(rightOutput);
+			left_mg.move(static_cast<int>((dy*factor)-(dx*factor))); // Move the output
+			right_mg.move(static_cast<int>((dy*factor)+(dx*factor)));
 
 		} else {
         	// Reset when joystick released
-        	count = 0;
+        	count = minCount;
         	left_mg.move(0);
         	right_mg.move(0);
 		}
