@@ -54,9 +54,9 @@ void autonomous() {
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER); // Needed for controller input
-	pros::MotorGroup left_mg({-5, -8, -9, -10});
-	pros::MotorGroup right_mg({1, 2, 3, 4}); 
-	pros::Motor arm(15); // Not real yet
+	pros::MotorGroup left_mg({11, 13, 14, 15});
+	pros::MotorGroup right_mg({-1, -2, -3, -4}); 
+	pros::MotorGroup arm({-9, 10}); 
 
 	// I always seem to forget this so this is how you print strings to the robot:
 	// pros::lcd::set_text(1, std::to_string(integer_here));
@@ -82,7 +82,7 @@ void opcontrol() {
 
 		bool up = master.get_digital(DIGITAL_R1); // Get input from triggers
 		bool down = master.get_digital(DIGITAL_L1);
-		int armSpeed = 60; // Speed that the arm moves
+		int armSpeed = 20; // Speed that the arm moves
 
 		// Arm program
 		if(up){ 
@@ -90,6 +90,9 @@ void opcontrol() {
 		} else if (down) {
 			arm.move(-armSpeed);
 		}
+
+		// FIXME: Arm keeps moving, so make the arm stop when not pressed
+		// Add encoder code 
 
 		// DRIVING //
 		
@@ -102,8 +105,8 @@ void opcontrol() {
 			}
 			double factor = count / (double)steps; // 1/100th of speed, 2/100th of speed, etc.
 
-			left_mg.move(static_cast<int>(factor*(dy-dx)));  // Straight movement - Turning movement, all multiplied by factor
-			right_mg.move(static_cast<int>(factor*(dy+dx)));
+			left_mg.move(static_cast<int>(factor*(dy+dx)));  // Straight movement - Turning movement, all multiplied by factor
+			right_mg.move(static_cast<int>(factor*(dy-dx)));
 
 		} else {
         	// Reset when joystick released
@@ -114,7 +117,5 @@ void opcontrol() {
 
 
 		pros::delay(delay_per_step); // Delays to prevent 
-
-	
 	}
 }
