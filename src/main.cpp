@@ -89,10 +89,9 @@ void opcontrol() {
 			arm.move(armSpeed); 
 		} else if (down) {
 			arm.move(-armSpeed);
+		} else {
+			arm.move(0); // If no button pressed, then stop arm motion
 		}
-
-		// FIXME: Arm keeps moving, so make the arm stop when not pressed
-		// Add encoder code 
 
 		// DRIVING //
 		
