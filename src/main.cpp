@@ -56,14 +56,14 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER); // Needed for controller input
 	pros::MotorGroup left_mg({11, 13, 14, 15});
 	pros::MotorGroup right_mg({-1, -2, -3, -4}); 
-	//pros::MotorGroup arm({-9, 10});  TODO: put this back in after testing arm encoders 
-	pros::Motor arm(10);
+	pros::MotorGroup arm({-9, 10});
+
+	// PID Variables
+	double armUp = -525;
+	double armDown = 400;
 
 	// I always seem to forget this so this is how you print strings to the robot:
 	// pros::lcd::set_text(1, std::to_string(integer_here));
-
-	// left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	// right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	int t = 3; // The amount of seconds to reach joystick's max speed
 	int count = 0; // Current step, this should remain 0
@@ -81,19 +81,19 @@ void opcontrol() {
 
 		// SPATULA (ARM) //
 
-		bool up = master.get_digital(DIGITAL_R1); // Get input from triggers
-		bool down = master.get_digital(DIGITAL_L1);
+		bool upControl = master.get_digital(DIGITAL_R1); // Manual control
+		bool downControl = master.get_digital(DIGITAL_L1);
+		bool up = master.get_digital(DIGITAL_R2); // Go to specific position on button press
+		bool down = master.get_digital(DIGITAL_L2);
 		int armSpeed = 20; // Speed that the arm moves
 		double armPosition = arm.get_position();
 
-		pros::lcd::set_text(1, std::to_string(master.get_digital(DIGITAL_R1)));
-		pros::lcd::set_text(2, std::to_string(master.get_digital(DIGITAL_L1)));
-		pros::lcd::set_text(3, std::to_string(armPosition));
+		pros::lcd::set_text(0, std::to_string(armPosition));
 
 		// Arm program
-		if(up){ 
+		if(upControl){ 
 			arm.move(armSpeed); 
-		} else if (down) {
+		} else if (downControl) {
 			arm.move(-armSpeed);
 		} else {
 			arm.move(0); // If no button pressed, then stop arm motion
