@@ -56,7 +56,8 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER); // Needed for controller input
 	pros::MotorGroup left_mg({11, 13, 14, 15});
 	pros::MotorGroup right_mg({-1, -2, -3, -4}); 
-	pros::MotorGroup arm({-9, 10}); 
+	//pros::MotorGroup arm({-9, 10});  TODO: put this back in after testing arm encoders 
+	pros::Motor arm(10);
 
 	// I always seem to forget this so this is how you print strings to the robot:
 	// pros::lcd::set_text(1, std::to_string(integer_here));
@@ -83,6 +84,11 @@ void opcontrol() {
 		bool up = master.get_digital(DIGITAL_R1); // Get input from triggers
 		bool down = master.get_digital(DIGITAL_L1);
 		int armSpeed = 20; // Speed that the arm moves
+		double armPosition = arm.get_position();
+
+		pros::lcd::set_text(1, std::to_string(master.get_digital(DIGITAL_R1)));
+		pros::lcd::set_text(2, std::to_string(master.get_digital(DIGITAL_L1)));
+		pros::lcd::set_text(3, std::to_string(armPosition));
 
 		// Arm program
 		if(up){ 
